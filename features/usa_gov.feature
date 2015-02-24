@@ -20,8 +20,7 @@ Feature: usa.gov
   Scenario: More than 50 characters
     Given I am on the usa.gov home page
     When I submit a search of "afghanistan.campaign.veterans.benefits.for.state.of.ohio"
-    Then I see "0" result/s
-    And I see "Sorry, no results found for 'afghanistan.campaign.veterans.benefits.for.state.o'. Try entering fewer or broader query terms.
+    Then I see "Sorry, no results found for 'afghanistan.campaign.veterans.benefits.for.state.o'. Try entering fewer or broader query terms." result/s
 
   Scenario: Max results per page of 20
     Given I am on the usa.gov home page

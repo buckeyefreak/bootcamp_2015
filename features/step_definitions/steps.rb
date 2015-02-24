@@ -60,25 +60,32 @@ When(/^I submit a search of "(.*?)"$/) do |search|
 end
 
 
-Then(/^I see "(.*?)" result\/s$/) do |expected_num_results|
-  actual_num_results = @browser_opened.divs(:id => /^result-/).size
-  puts expected_num_results.to_i
-  puts actual_num_results.to_i
+Then(/^I see "(.*?)" result\/s$/) do |expected_results|
   max_num_results = 20
   max_search_length = 50
+  actual_results = @browser_opened.divs(:id => /^result-/).size
+
+  puts expected_results
+  puts actual_results
+
+  if expected_results.include?(/\D/)
+    expected_results = expected_results
+  else
+    expected_results.delete[^0-9]
+  end
+
+  puts "after change #{expected_results}"
 
   #div class next_page
   #failure messages
 
   #Scenario: --- fail if not at least 1 result
-  fail("Number of results returned was #{actual_num_results} but at least #{expected_num_results} was required to pass") unless actual_num_results >= expected_num_results.to_i
+  fail("Number of results returned was #{actual_results} but at least #{expected_results} was required to pass") unless actual_results >= expected_results
   #Scenario: --- fail if allows more than 50 characters
-  fail("Search string entered contained #{$enteredSearchLength} but was not truncated to the max of #{max_search_length} characters") unless $truncatedSearchLength <= max_search_length.to_i
+  fail("Search string entered contained #{$enteredSearchLength} but was not truncated to the max of #{max_search_length} characters") unless $truncatedSearchLength <= max_search_length
   #Scenario: --- fail if less than 20 results per page and more than 1 page OR more than 20 results per page
   fail("Search returned #{actual_num_results} on one page but only #{max_num_results} is allowed") unless actual_num_results <= max_num_results.to_i
 end
 
-And(/^I see "Sorry, no results found for '(.*?)'\. Try entering fewer or broader query terms\.$/) do |bad_search|
-  searchText = @browser_opened.browser.text.include?(bad_search)
-  fail("The search term '#{bad_search}' was not found on the no results page") unless searchText == true
-end
+#  searchText = @browser_opened.browser.text.include?(bad_search)
+ # fail("The search term '#{bad_search}' was not found on the no results page") unless searchText == true
