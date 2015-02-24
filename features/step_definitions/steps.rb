@@ -1,27 +1,14 @@
 Given(/^I open the "(.*?)" browser$/) do |browser|
-  @browser_opened = Watir::Browser.new to_browser_id(browser)
+  @browser_opened = Watir::Browser.new HelperMethods.to_browser_id(browser)
 end
 
 Then(/^the "(.*?)" browser is open$/) do |browser|
-  fail ("The #{browser} browser is not open.") unless to_browser_id(browser).to_sym == @browser_opened.name
+  fail ("The #{browser} browser is not open.") unless HelperMethods.to_browser_id(browser) == @browser_opened.name
+  @browser_opened.close
 end
 
-#Convert user names for browser to strings for watir-webdriver
-def to_browser_id (browser)
-  case browser.downcase
-    when 'internet explorer', 'ie'
-      'internet explorer'
-    when /phantom/
-      'phantomjs'
-    else
-      browser.downcase!.nil? ? browser : browser.downcase!
-  end
-end
-
-
-Given(/^I am on the usa\.gov home page$/) do
-  @browser_opened = Watir::Browser.new
-  @browser_opened.goto 'www.usa.gov'
+Given /^I am on the USA.gov home page$/ do
+  BROWSER.goto 'www.usa.gov'
 end
 
 $searchId = 'query'
@@ -88,4 +75,4 @@ Then(/^I see "(.*?)" result\/s$/) do |expected_results|
 end
 
 #  searchText = @browser_opened.browser.text.include?(bad_search)
- # fail("The search term '#{bad_search}' was not found on the no results page") unless searchText == true
+# fail("The search term '#{bad_search}' was not found on the no results page") unless searchText == true
