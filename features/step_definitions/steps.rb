@@ -1,10 +1,10 @@
 Given(/^I open the "(.*?)" browser$/) do |browser|
-  @browser_opened = Watir::Browser.new HelperMethods.to_browser_id(browser)
+  BROWSER = Watir::Browser.new HelperMethods.to_browser_id(browser)
 end
 
 Then(/^the "(.*?)" browser is open$/) do |browser|
-  fail ("The #{browser} browser is not open.") unless HelperMethods.to_browser_id(browser) == @browser_opened.name
-  @browser_opened.close
+  fail ("The #{browser} browser is not open.") unless HelperMethods.to_browser_id(browser) == BROWSER.name
+  BROWSER.close
 end
 
 Given /^I am on the USA.gov home page$/ do
@@ -15,24 +15,23 @@ $searchId = 'query'
 $searchButton = 'buscarSubmit'
 Then(/^I see the search field$/) do
 
-  fail ("Search field id #{$searchId} was not found.") unless @browser_opened.text_field(:id => $searchId).exists?
+  fail ("Search field id #{$searchId} was not found.") unless BROWSER.text_field(:id => $searchId).exists?
 end
 
 
 And(/^I see a search button$/) do
-  $searchButton = 'buscarSubmit'
-  fail ("Search button #{$searchButton} was not found.") unless @browser_opened.button(:id => $searchButton).exists?
+  fail ("Search button #{$searchButton} was not found.") unless BROWSER.button(:id => $searchButton).exists?
 end
 
 
 And(/^the field value is "(.*?)"$/) do |placeholder|
-  actualPlaceholder = @browser_opened.text_field(:id => $searchId).placeholder
+  actualPlaceholder = BROWSER.text_field(:id => $searchId).placeholder
   fail ("The placeholder text of #{actualPlaceholder}, found on usa.gov does not match the required placeholder text of #{placeholder}") unless actualPlaceholder.eql?(placeholder)
 end
 
 
 And(/^the button label is "(.*?)"$/) do |label|
-  actualLabel = @browser_opened.button(:id => $searchButton).value
+  actualLabel = BROWSER.button(:id => $searchButton).value
   puts label
   puts actualLabel
   fail ("The label for the search button is #{actualLabel}, and does not match the required label of #{label}") unless actualLabel.eql?(label)
@@ -40,25 +39,25 @@ end
 
 
 When(/^I submit a search of "(.*?)"$/) do |search|
-  @browser_opened.text_field(:id => $searchId).set search
-  $truncatedSearchLength = @browser_opened.text_field(:id => $searchId).value.length
+  BROWSER.text_field(:id => $searchId).set search
+  $truncatedSearchLength = BROWSER.text_field(:id => $searchId).value.length
   $enteredSearchLength = search.length
-  @browser_opened.button(:id => $searchButton).click
+  BROWSER.button(:id => $searchButton).click
 end
 
 
 Then(/^I see "(.*?)" result\/s$/) do |expected_results|
   max_num_results = 20
   max_search_length = 50
-  actual_results = @browser_opened.divs(:id => /^result-/).size
+  actual_num_results = BROWSER.divs(:id => /^result-/).size
 
   puts expected_results
-  puts actual_results
+  puts actual_num_results
 
   if expected_results.include?(/\D/)
     expected_results = expected_results
   else
-    expected_results.delete[^0-9]
+    expected_results.delete(/[^0-9]/)
   end
 
   puts "after change #{expected_results}"
@@ -74,5 +73,5 @@ Then(/^I see "(.*?)" result\/s$/) do |expected_results|
   fail("Search returned #{actual_num_results} on one page but only #{max_num_results} is allowed") unless actual_num_results <= max_num_results.to_i
 end
 
-#  searchText = @browser_opened.browser.text.include?(bad_search)
+#  searchText = BROWSER.browser.text.include?(bad_search)
 # fail("The search term '#{bad_search}' was not found on the no results page") unless searchText == true
