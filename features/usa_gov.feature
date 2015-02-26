@@ -23,7 +23,6 @@ Feature: USA gov home page
       | scenario                                         | search_string                                       | expected_results |
       | Enter search                                     | health                                              | at least 1       |
       | Enter search - special characters                | h@$%^&*)(?/                                         | at least 1       |
-      | Enter search - more than 50 characters - results | This.statement.can.have.50.characters.but.not....51 | 0                |
       | Enter search - max 20 results per page           | tax                                                 | 20               |
       | Search 0 results                                 | This.statement.can.have.50.characters.but.not....   | no results found |
 
@@ -36,9 +35,9 @@ Feature: USA gov home page
 #    When I submit a search "h@$%^&*)(?/"
 #    Then I see "at least 1" search result(s)
 #
-#  Scenario: Enter search - more than 50 characters - results
-#    When I submit a search "This.statement.can.have.50.characters.but.not....51"
-#    Then I see "0" search result(s)
+  Scenario: Enter search - more than 50 characters - results
+    When I submit a search "This.statement.can.have.50.characters.but.not....51"
+    Then I see the search term truncated to 50 characters
 #
 #  Scenario: Enter search - max 20 results per page
 #    When I submit a search "tax"

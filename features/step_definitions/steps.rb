@@ -46,6 +46,7 @@ Then(/^I see "(.*?)" search result\(s\)$/) do |expected_count|
 
 # get the number of results
     result_count = BROWSER.divs(:id => /^result-/).size
+    no_result = BROWSER.div(:id => "no-results").exists?
 
 # determine if step passes 
     comparison = case compare_to
@@ -59,6 +60,8 @@ Then(/^I see "(.*?)" search result\(s\)$/) do |expected_count|
                    result_count <= count
                  when 'or more', 'at least'
                    result_count >= count
+                 when 'no results found'
+                   no_result == true
                  else
                    fail ("Comparison #{compare_to} not supported")
                  end
@@ -70,4 +73,9 @@ Then /^a "([^"]*)" message displays$/ do |message|
   actual = BROWSER.div(:id => 'no-results').text
 
   fail("The message #{actual} does not contain the text #{message}") unless actual =~ /#{message}/
+end
+
+Then(/^I see the search term truncated to (\d+) characters$/) do |search_size_allowed|
+  actual_search_size = BROWSER.text_field(:id =>"query").value.size
+  fail("The search term size was #{actual_search_size} when only #{search_size_allowed} is allowed") unless actual_search_size == search_size_allowed.to_i
 end
