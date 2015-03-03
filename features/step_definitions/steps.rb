@@ -12,6 +12,7 @@ Given /^I am on the USA.gov home page$/ do
 end
 
 Then /^I see a search field$/ do
+  fail ('The search field was not visible.') unless BROWSER.text_field(:id => "query").visible?
   expect(BROWSER.text_field(:id =>'query').to_not exist)
 end
 
