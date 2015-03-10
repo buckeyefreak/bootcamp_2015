@@ -16,21 +16,15 @@ Then /^I see a search field$/ do
 end
 
 Then /^the search field value is "([^"]*)"$/ do |search_string|
-  actual =  BROWSER.text_field(:id => "query").placeholder
-  unless search_string == actual
-    fail ("The search field value #{actual } does not match the expected value #{ search_string }.")
-  end
+  expect(BROWSER.text_field(:id => "query").placeholder).to eq(search_string)
 end
 
 Then /^I see a search button$/ do
-  fail ("The search button was not present.") unless BROWSER.button(:id => "buscarSubmit").present?
+  expect(BROWSER.button(:id => "buscarSubmit").present?).to be_truthy
 end
 
 Then /^the search button label is "([^"]*)"$/ do |button_label|
-  actual =  BROWSER.button(:id => "buscarSubmit").text
-  unless button_label  == actual
-    fail ("The search button label #{actual} does not match the expected value #{ button_label }.")
-  end
+  expect(BROWSER.button(:id => "buscarSubmit").text).to eq(button_label)
 end
 
 When(/^I submit a search "(.*?)"$/) do |search_string|
@@ -66,16 +60,13 @@ Then(/^I see "(.*?)" search result\(s\)$/) do |expected_count|
                    fail ("Comparison #{compare_to} not supported")
                  end
 
-    fail("The actual count #{result_count} does not match the expected count #{expected_count}.") unless comparison
+    expect(result_count).to be_truthy
 end
 
 Then /^a "([^"]*)" message displays$/ do |message|
-  actual = BROWSER.div(:id => 'no-results').text
-
-  fail("The message #{actual} does not contain the text #{message}") unless actual =~ /#{message}/
+  expect(BROWSER.div(:id => 'no-results').text).to include(message)
 end
 
 Then(/^I see the search term truncated to (\d+) characters$/) do |search_size_allowed|
-  actual_search_size = BROWSER.text_field(:id =>"query").value.size
-  fail("The search term size was #{actual_search_size} when only #{search_size_allowed} is allowed") unless actual_search_size == search_size_allowed.to_i
+  expect(BROWSER.text_field(:id =>"query").value.size).to eq(search_size_allowed).to_i
 end
